@@ -42,7 +42,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         let propsNames = Object.keys(props);
         for (let i = 0; i < propsNames.length; i++) {
             let propName = propsNames[i];
-            let val = props[propName];
+            let val = (<any>props)[propName];
 
             if (!!(val && val.constructor && val.call && val.apply)) {
                 attrs += `(${kebabCase(propName)})="props.${propName}($event)"`

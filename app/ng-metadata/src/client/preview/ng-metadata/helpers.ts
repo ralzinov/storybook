@@ -5,8 +5,8 @@ import {ErrorComponent} from './components/error.component';
 import {AppComponent} from './components/app.component';
 import {STORY} from './app.token';
 
-const debounce = (func, wait = 100, immediate = false) => {
-    let timeout;
+const debounce = (func: (error: any, context: any) => void, wait = 100, immediate = false) => {
+    let timeout: any;
     return function () {
         let context = this, args = arguments;
         let later = function () {
@@ -20,7 +20,7 @@ const debounce = (func, wait = 100, immediate = false) => {
     };
 };
 
-const getModule = (declarations, entryComponents, bootstrap, data) => {
+const getModule = (declarations: any[], entryComponents: any[], bootstrap: any[], data: any) => {
     @NgModule({
         declarations: [...declarations],
         providers: [{ provide: STORY, useValue: Object.assign({}, data) }],
@@ -31,7 +31,7 @@ const getModule = (declarations, entryComponents, bootstrap, data) => {
     return Module;
 };
 
-const initModule = (currentStory, context) => {
+const initModule = (currentStory: any, context: any) => {
     const story = currentStory(context);
     const AnnotatedComponent = story.component;
     return getModule(
@@ -42,7 +42,7 @@ const initModule = (currentStory, context) => {
     );
 };
 
-const draw = (newModule) => {
+const draw = (newModule: any) => {
     let app = document.body.querySelector('my-app');
     if (app) {
         app.remove();
@@ -65,9 +65,9 @@ export const kebabCase = (name: string) => {
     });
 };
 
-export const renderNgError = debounce((error) => {
+export const renderNgError = debounce((error: any): void => {
     const errorData = {
-        component: null,
+        component: null as any,
         props: {
             message: error.message,
             stack: error.stack
