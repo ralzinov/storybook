@@ -1,8 +1,8 @@
-import { Component, Inject } from "ng-metadata/core";
-import { STORY, Data } from "../app.token";
+import { Component, Inject } from 'ng-metadata/core';
+import { STORY, Data } from '../app.token';
 
 @Component({
-    selector: "my-app",
+    selector: 'my-app',
     template: `
         <div class="main">
             <h1>{{ $ctrl.error.props.message }}</h1>

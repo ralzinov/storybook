@@ -5,22 +5,48 @@ import {ErrorComponent} from './components/error.component';
 import {AppComponent} from './components/app.component';
 import {STORY} from './app.token';
 
-const debounce = (func: (error: any, context: any) => void, wait = 100, immediate = false) => {
-    let timeout: any;
+type  IGetStoryWithContext = (context: object) => any;
+
+// Taken from https://davidwalsh.name/javascript-debounce-function
+// We don't want to pull underscore
+
+const debounce = (
+    func: (story: any, context: object) => void,
+    wait = 100,
+    immediate = false
+): () => void => {
+    let timeout: number;
     return function () {
-        let context = this, args = arguments;
-        let later = function () {
+        const context = this;
+        const args = arguments;
+        const later = function () {
             timeout = null;
-            if (!immediate) func.apply(context, args);
+            if (!immediate) {
+                func.apply(context, args)
+            }
         };
-        let callNow = immediate && !timeout;
+
+        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
+        if (callNow) {
+            func.apply(context, args);
+        }
     };
 };
 
-const getModule = (declarations: any[], entryComponents: any[], bootstrap: any[], data: any) => {
+export const kebabCase = (name: string): string => {
+    return name.replace(/[A-Z]/g, (letter, pos) => {
+        return (pos ? '-' : '') + letter.toLowerCase();
+    });
+};
+
+const getModule = (
+    declarations: Array<Function|Function[]>,
+    entryComponents: Array<any[]>,
+    bootstrap: any,
+    data: {[p: string]: any}
+): any => {
     @NgModule({
         declarations: [...declarations],
         providers: [{ provide: STORY, useValue: Object.assign({}, data) }],
@@ -31,7 +57,7 @@ const getModule = (declarations: any[], entryComponents: any[], bootstrap: any[]
     return Module;
 };
 
-const initModule = (currentStory: any, context: any) => {
+const initModule = (currentStory: IGetStoryWithContext, context: object): any => {
     const story = currentStory(context);
     const AnnotatedComponent = story.component;
     return getModule(
@@ -42,7 +68,7 @@ const initModule = (currentStory: any, context: any) => {
     );
 };
 
-const draw = (newModule: any) => {
+const draw = (newModule: any): void => {
     let app = document.body.querySelector('my-app');
     if (app) {
         app.remove();
@@ -59,15 +85,9 @@ const draw = (newModule: any) => {
     });
 };
 
-export const kebabCase = (name: string) => {
-    return name.replace(/[A-Z]/g, function(letter, pos) {
-        return (pos ? '-' : '') + letter.toLowerCase();
-    });
-};
-
-export const renderNgError = debounce((error: any): void => {
+export const renderNgError = debounce((error: Error) => {
     const errorData = {
-        component: null as any,
+        component: <any>null,
         props: {
             message: error.message,
             stack: error.stack

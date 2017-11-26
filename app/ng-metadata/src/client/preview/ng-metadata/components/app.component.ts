@@ -18,31 +18,31 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     @ViewChild('ng-template') target: any;
 
     constructor(@Inject(STORY) private data: Data,
-                @Inject('$rootScope') private $rootScope: any,
-                @Inject('$compile') private $compile: any) {
+                @Inject('$rootScope') private $rootScope: ng.IRootScopeService,
+                @Inject('$compile') private $compile: ng.ICompileService) {
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.putInMyHtml();
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.target.empty();
     }
 
-    putInMyHtml() {
+    putInMyHtml(): void {
         this.target.empty();
         const {component, props = {}} = this.data;
 
         const $scope = this.$rootScope.$new();
-        let ctrlName = getInjectableName(component);
-        let selector = kebabCase(ctrlName);
+        const ctrlName = getInjectableName(component);
+        const selector = kebabCase(ctrlName);
 
         let attrs = '';
-        let propsNames = Object.keys(props);
+        const propsNames = Object.keys(props);
         for (let i = 0; i < propsNames.length; i++) {
-            let propName = propsNames[i];
-            let val = (<any>props)[propName];
+            const propName = propsNames[i];
+            const val = (<any>props)[propName];
 
             if (!!(val && val.constructor && val.call && val.apply)) {
                 attrs += `(${kebabCase(propName)})="props.${propName}($event)"`
@@ -51,7 +51,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             }
         }
 
-        let host = angular.element(`<${selector} ${attrs}></${selector}>`);
+        const host = angular.element(`<${selector} ${attrs}></${selector}>`);
         $scope.props = props;
         this.target.append(host);
         this.$compile(this.target.contents())($scope)

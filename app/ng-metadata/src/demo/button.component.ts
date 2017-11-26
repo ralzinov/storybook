@@ -23,7 +23,7 @@ export default class ButtonComponent {
     @Input() text = '';
     @Output() onClick = new EventEmitter<any>();
 
-    handleClick(event: any) {
+    handleClick(event: MouseEvent) {
         this.onClick.emit(event);
     }
 }
