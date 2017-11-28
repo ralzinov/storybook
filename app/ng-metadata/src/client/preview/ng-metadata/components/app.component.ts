@@ -32,7 +32,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     putInMyHtml(): void {
         this.target.empty();
-        const {component, props = {}} = this.data;
+        let {component, props = {} } = this.data;
+
+        if (!component && props.storyFn) {
+            const story = props.storyFn(props.context);
+            props = story.props;
+            component = story.component;
+        }
 
         const $scope = this.$rootScope.$new();
         const ctrlName = getInjectableName(component);
@@ -52,7 +58,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         }
 
         const host = angular.element(`<${selector} ${attrs}></${selector}>`);
-        $scope.props = props;
+        (<any>$scope).props = props;
         this.target.append(host);
         this.$compile(this.target.contents())($scope)
     }

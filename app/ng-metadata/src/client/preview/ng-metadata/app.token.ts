@@ -4,6 +4,6 @@ export const STORY = new OpaqueToken("story");
 
 export type Data = {
     component: any;
-    props: object;
+    props: {[p :string]: any};
     propsMeta: object;
 }
