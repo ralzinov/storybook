@@ -25,7 +25,7 @@ export function renderException(error) {
 export function renderMain(data, storyStore) {
   if (storyStore.size() === 0) return null;
 
-  const { selectedKind, selectedStory } = data;
+  const { selectedKind, selectedStory, opts = {} } = data;
 
   const story = storyStore.getStory(selectedKind, selectedStory);
   if (!story) {
@@ -51,7 +51,7 @@ export function renderMain(data, storyStore) {
     kind: selectedKind,
     story: selectedStory,
   };
-  return renderNgApp(story, context, reRender);
+  return renderNgApp(story, context, reRender, opts);
 }
 
 export default function renderPreview({ reduxStore, storyStore }) {

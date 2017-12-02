@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import { location } from 'global';
-import { setInitialStory, setError, clearError } from './actions';
+import { setInitialStory, setError, clearError, setAppOptions } from './actions';
 import { clearDecorators } from './';
 
 export default class ConfigApi {
@@ -13,7 +13,7 @@ export default class ConfigApi {
     this._reduxStore = reduxStore;
   }
 
-  _renderMain(loaders) {
+  _renderMain(loaders, opts) {
     if (loaders) loaders();
 
     const stories = this._storyStore.dumpStoryBook();
@@ -22,6 +22,7 @@ export default class ConfigApi {
 
     // clear the error if exists.
     this._reduxStore.dispatch(clearError());
+    this._reduxStore.dispatch(setAppOptions(opts));
     this._reduxStore.dispatch(setInitialStory(stories));
   }
 
@@ -31,10 +32,10 @@ export default class ConfigApi {
     this._reduxStore.dispatch(setError(error));
   }
 
-  configure(loaders, module) {
+  configure(loaders, module, opts = {}) {
     const render = () => {
       try {
-        this._renderMain(loaders);
+        this._renderMain(loaders, opts);
       } catch (error) {
         if (module.hot && module.hot.status() === 'apply') {
           // We got this issue, after webpack fixed it and applying it.

@@ -7,11 +7,15 @@ import {STORY} from './app.token';
 
 type  IGetStoryWithContext = (context: object) => any;
 
+interface INgAppOpts {
+    ngRequires: string[];
+}
+
 // Taken from https://davidwalsh.name/javascript-debounce-function
 // We don't want to pull underscore
 
 const debounce = (
-    func: (story: any, context: object) => void,
+    func: (story: any, context: object, reRender: boolean, opts: INgAppOpts) => void,
     wait = 100,
     immediate = false
 ): () => void => {
@@ -68,7 +72,7 @@ const initModule = (currentStory: IGetStoryWithContext, context: object): any =>
     );
 };
 
-const draw = (newModule: any): void => {
+const draw = (newModule: any, ngRequires: string[] = []): void => {
     let app = document.body.querySelector('my-app');
     if (app) {
         app.remove();
@@ -79,7 +83,7 @@ const draw = (newModule: any): void => {
     angular.element(app).ready(() => {
         const angular1Module = bundle(newModule);
         const angular1ModuleName = angular1Module.name;
-        return angular.bootstrap(app, [ angular1ModuleName ], {
+        return angular.bootstrap(app, [ angular1ModuleName, ...ngRequires ], {
             strictDi: false
         });
     });
@@ -109,6 +113,11 @@ export const renderNoPreview = debounce(() => {
     draw(Module);
 });
 
-export const renderNgApp = debounce((story, context) => {
-    draw(initModule(story, context));
+export const renderNgApp = debounce((
+    story: IGetStoryWithContext,
+    context: object,
+    reRender: boolean,
+    opts: INgAppOpts
+) => {
+    draw(initModule(story, context), opts.ngRequires);
 });

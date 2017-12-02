@@ -3,12 +3,20 @@ export const types = {
   CLEAR_ERROR: 'PREVIEW_CLEAR_ERROR',
   SELECT_STORY: 'PREVIEW_SELECT_STORY',
   SET_INITIAL_STORY: 'PREVIEW_SET_INITIAL_STORY',
+  SET_APP_OPTS: 'PREVIEW_SET_APP_OPTS',
 };
 
 export function setInitialStory(storyKindList) {
   return {
     type: types.SET_INITIAL_STORY,
     storyKindList,
+  };
+}
+
+export function setAppOptions(opts) {
+  return {
+    type: types.SET_APP_OPTS,
+    opts,
   };
 }
 
