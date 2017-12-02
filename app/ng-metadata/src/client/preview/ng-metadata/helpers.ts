@@ -63,7 +63,7 @@ const getModule = (
 
 const initModule = (currentStory: IGetStoryWithContext, context: object): any => {
     const story = currentStory(context);
-    const AnnotatedComponent = story.component;
+    const AnnotatedComponent = story.component || story.props.initialContent.component;
     return getModule(
         [AppComponent, AnnotatedComponent],
         [AnnotatedComponent],
