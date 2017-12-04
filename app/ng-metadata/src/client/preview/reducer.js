@@ -12,7 +12,7 @@ export default function reducer(state = {}, action) {
     case types.SET_APP_OPTS: {
       return {
         ...state,
-        opts: action.ngRequires,
+        opts: action.opts,
       };
     }
 
